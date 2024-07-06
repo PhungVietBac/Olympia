@@ -41,16 +41,24 @@ namespace Olympia.Forms {
             foreach (Form form in Application.OpenForms) {
                 if (round == 1) {
                     if (form.Name == "Round1") {
-                        Invoke(new MethodInvoker(delegate {
+                        if (InvokeRequired) {
+                            Invoke(new MethodInvoker(delegate {
+                                form.Visible = true;
+                            }));
+                        } else {
                             form.Visible = true;
-                        }));
+                        }
                         break;
                     }
                 } else {
                     if (form.Name == "Round2") {
-                        Invoke(new MethodInvoker(delegate {
+                        if (InvokeRequired) {
+                            Invoke(new MethodInvoker(delegate {
+                                form.Visible = true;
+                            }));
+                        } else {
                             form.Visible = true;
-                        }));
+                        }
                         break;
                     }
                 }

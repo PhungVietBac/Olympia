@@ -107,7 +107,7 @@ namespace Olympia.Forms {
         }
 
         private void Connect() {
-            client = new TcpClient("tcp://0.tcp.ap.ngrok.io", 13951);
+            client = new TcpClient("0.tcp.ap.ngrok.io", 13951);
             receive = new Thread(() => ReceiveMessage(client));
             receive.IsBackground = true;
             receive.Start();
