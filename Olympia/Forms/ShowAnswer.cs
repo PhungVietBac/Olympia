@@ -44,9 +44,11 @@ namespace Olympia.Forms {
                         if (InvokeRequired) {
                             Invoke(new MethodInvoker(delegate {
                                 form.Visible = true;
+                                form.Activate();
                             }));
                         } else {
                             form.Visible = true;
+                            form.Activate();
                         }
                         break;
                     }
@@ -55,9 +57,11 @@ namespace Olympia.Forms {
                         if (InvokeRequired) {
                             Invoke(new MethodInvoker(delegate {
                                 form.Visible = true;
+                                form.Activate();
                             }));
                         } else {
                             form.Visible = true;
+                            form.Activate();
                         }
                         break;
                     }
