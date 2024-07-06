@@ -1,9 +1,8 @@
-﻿using NAudio.Wave;
-using Newtonsoft.Json;
-using NVorbis;
+﻿using Newtonsoft.Json;
 using Olympia.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -95,8 +94,11 @@ namespace Olympia.Forms {
         }
 
         private void Round1_Load(object sender, EventArgs e) {
-            sound = new SoundPlayer(Properties.Resources.VCNV_OpenCNV);
-            sound.Play();
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
+            Invoke(new MethodInvoker(delegate {
+                sound = new SoundPlayer(Properties.Resources.VCNV_OpenCNV);
+                sound.Play();
+            }));
             Cursor = Cursors.WaitCursor;
             SendData("INFO_START:" + roomCode, client);
             receive = new Thread(() => ReceiveMessage(client));
@@ -280,6 +282,7 @@ namespace Olympia.Forms {
                             btnQuest3.Enabled = false;
                             btnQuest4.Enabled = false;
                             Bell.Enabled = false;
+                        isPress = false;
                             remainPlayer--;
                             if (player.Username != playerTurn)
                                 AddText(1, $"Lượt của người chơi {playerTurn}\r\n");
@@ -303,6 +306,7 @@ namespace Olympia.Forms {
                         data = Payload[1].Split('-');
                         if (data[0] == "0") {
                             remainPlayer--;
+                        isPress = false;
                             AddText(0, $"Không chính xác! Người chơi {data[1]} bị loại!\r\n");
                             btnAnswer.Enabled = true;
                             foreach (Button b in remainButton) {
@@ -426,50 +430,50 @@ namespace Olympia.Forms {
 
         private void OpenFormnQuestionRound1(int number) {
             //Invoke(new MethodInvoker(delegate {
-                if (number == 0) {
-                    btnQuest1.Enabled = false;
-                    remainButton.Remove(btnQuest1);
-                } else if (number == 1) {
-                    btnQuest2.Enabled = false;
-                    remainButton.Remove(btnQuest2);
-                } else if (number == 2) {
-                    btnQuest3.Enabled = false;
-                    remainButton.Remove(btnQuest3);
-                } else if (number == 3) {
-                    btnQuest4.Enabled = false;
-                    remainButton.Remove(btnQuest4);
-                }
-                QuestionRound1 form = new QuestionRound1();
-                form.data = GetQuestion(number);
-                form.client = client;
-                form.roomCode = roomCode;
-                form.player = player;
-                Visible = false;
-                form.ShowDialog();
-            if (isTerminated) {
-                Invoke(new MethodInvoker(delegate {
-                    form.Visible = false;
-                }));
+            if (number == 0) {
+                btnQuest1.Enabled = false;
+                remainButton.Remove(btnQuest1);
+            } else if (number == 1) {
+                btnQuest2.Enabled = false;
+                remainButton.Remove(btnQuest2);
+            } else if (number == 2) {
+                btnQuest3.Enabled = false;
+                remainButton.Remove(btnQuest3);
+            } else if (number == 3) {
+                btnQuest4.Enabled = false;
+                remainButton.Remove(btnQuest4);
             }
-                if (form.IsQuestDone()) {
-                    suspendEvent.Reset();
-                    ShowAnswer show = new ShowAnswer();
-                    show.client = client;
-                    show.roomCode = roomCode;
-                    show.round = 1;
-                    show.ShowDialog();
-                    numGuess++;
-                    if (show.IsGetPic()) {
-                        sound = new SoundPlayer(Properties.Resources.VNCV_OpenAns);
-                        sound.Play();
-                        ShowPicAndDrawAns(number, show.GetAnswer());
-                    } else {
-                        sound = new SoundPlayer(Properties.Resources.VCNV_False);
-                        sound.Play();
-                        IgnoreAnswer(number);
-                    }
-                    suspendEvent.Set();
+            QuestionRound1 form = new QuestionRound1();
+            form.data = GetQuestion(number);
+            form.client = client;
+            form.roomCode = roomCode;
+            form.player = player;
+            form.isTerminated = isTerminated;
+            Visible = false;
+            form.WindowState = FormWindowState.Normal;
+            form.Activate();
+            form.ShowDialog();
+            if (form.IsQuestDone()) {
+                suspendEvent.Reset();
+                ShowAnswer show = new ShowAnswer();
+                show.client = client;
+                show.roomCode = roomCode;
+                show.round = 1;
+                show.WindowState = FormWindowState.Normal;
+                show.Activate();
+                show.ShowDialog();
+                numGuess++;
+                if (show.IsGetPic()) {
+                    sound = new SoundPlayer(Properties.Resources.VNCV_OpenAns);
+                    sound.Play();
+                    ShowPicAndDrawAns(number, show.GetAnswer());
+                } else {
+                    sound = new SoundPlayer(Properties.Resources.VCNV_False);
+                    sound.Play();
+                    IgnoreAnswer(number);
                 }
+                suspendEvent.Set();
+            }
             //}));
         }
 
@@ -726,8 +730,9 @@ namespace Olympia.Forms {
 
         private void countdownFinalTimer_Tick(object sender, EventArgs e) {
             if (finalTimeLeft.TotalSeconds > 0) {
-                if (!isPress)
+                if (!isPress) {
                     finalTimeLeft = finalTimeLeft.Subtract(TimeSpan.FromSeconds(1));
+                }
             } else {
                 countdownFinalTimer.Stop();
                 AddText(0, "Đã hết 5 giây cuối cùng, không ai trả lời được chướng ngại vật\r\n");

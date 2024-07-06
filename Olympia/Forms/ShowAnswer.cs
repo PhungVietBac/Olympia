@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Media;
@@ -41,28 +42,14 @@ namespace Olympia.Forms {
             foreach (Form form in Application.OpenForms) {
                 if (round == 1) {
                     if (form.Name == "Round1") {
-                        if (InvokeRequired) {
-                            Invoke(new MethodInvoker(delegate {
-                                form.Visible = true;
-                                form.Activate();
-                            }));
-                        } else {
-                            form.Visible = true;
-                            form.Activate();
-                        }
+                        form.Visible = true;
+                        form.Activate();
                         break;
                     }
                 } else {
                     if (form.Name == "Round2") {
-                        if (InvokeRequired) {
-                            Invoke(new MethodInvoker(delegate {
-                                form.Visible = true;
-                                form.Activate();
-                            }));
-                        } else {
-                            form.Visible = true;
-                            form.Activate();
-                        }
+                        form.Visible = true;
+                        form.Activate();
                         break;
                     }
                 }
@@ -71,6 +58,7 @@ namespace Olympia.Forms {
         }
 
         private void ShowAnswer_Load(object sender, EventArgs e) {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
             sound = new SoundPlayer(Properties.Resources.ShowAns);
             sound.Play();
             Thread.Sleep(1000);

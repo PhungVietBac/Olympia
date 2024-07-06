@@ -72,7 +72,6 @@ namespace Olympia.Forms {
                     if (data[0] == player.Username) {
                         lblYourScore.Visible = false;
                         player.WinCount++;
-                        MessageBox.Show(player.WinCount.ToString());
                         string jsonContent = JsonConvert.SerializeObject(player);
                         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                         using (HttpClient client = new HttpClient()) {

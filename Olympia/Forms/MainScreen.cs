@@ -122,6 +122,8 @@ namespace Olympia.Forms {
 
         private async void GiaoDienChinh_Load(object sender, EventArgs e) {
             Cursor = Cursors.WaitCursor;
+            btnCreateRoom.Enabled = false;
+            btnEnter.Enabled = false;
             await SortPlayer();
             int y = 0;
             for (int i = 0; i < players.Count; i++) {
@@ -179,6 +181,8 @@ namespace Olympia.Forms {
                     pnFriendList.Controls.Add(ptb);
                 }
             }
+            btnCreateRoom.Enabled = true;
+            btnEnter.Enabled = true;
             Cursor = Cursors.Default;
         }
 
