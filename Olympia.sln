@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olympia", "Olympia\Olympia.csproj", "{25123A00-C7A3-414E-89A9-02D68C1E1099}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{B37C9DC8-BF60-4276-A2DF-F59E915F0EA0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25123A00-C7A3-414E-89A9-02D68C1E1099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25123A00-C7A3-414E-89A9-02D68C1E1099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25123A00-C7A3-414E-89A9-02D68C1E1099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25123A00-C7A3-414E-89A9-02D68C1E1099}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B37C9DC8-BF60-4276-A2DF-F59E915F0EA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37C9DC8-BF60-4276-A2DF-F59E915F0EA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B37C9DC8-BF60-4276-A2DF-F59E915F0EA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B37C9DC8-BF60-4276-A2DF-F59E915F0EA0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4A0B0AA-EB68-4CB6-9FB6-1C2892C21F95}
+	EndGlobalSection
+EndGlobal
