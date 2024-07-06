@@ -1,5 +1,6 @@
 ﻿using Olympia.Forms;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Olympia {
@@ -9,6 +10,7 @@ namespace Olympia {
         /// </summary>
         [STAThread]
         static void Main() {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new RootForm());

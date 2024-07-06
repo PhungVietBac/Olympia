@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -56,6 +57,7 @@ namespace Olympia.Forms {
         }
 
         private void InfoRound_Load(object sender, EventArgs e) {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
             if (round == 1) {
                 lblInfoRound.Text = "Vượt chướng ngại vật";
                 Invoke(new MethodInvoker(delegate {

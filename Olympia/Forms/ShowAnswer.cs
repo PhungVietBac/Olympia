@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Media;
@@ -71,6 +72,7 @@ namespace Olympia.Forms {
         }
 
         private void ShowAnswer_Load(object sender, EventArgs e) {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
             sound = new SoundPlayer(Properties.Resources.ShowAns);
             sound.Play();
             Thread.Sleep(1000);

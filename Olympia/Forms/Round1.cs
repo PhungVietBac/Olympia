@@ -4,6 +4,7 @@ using NVorbis;
 using Olympia.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -95,6 +96,7 @@ namespace Olympia.Forms {
         }
 
         private void Round1_Load(object sender, EventArgs e) {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
             sound = new SoundPlayer(Properties.Resources.VCNV_OpenCNV);
             sound.Play();
             Cursor = Cursors.WaitCursor;
@@ -280,6 +282,7 @@ namespace Olympia.Forms {
                             btnQuest3.Enabled = false;
                             btnQuest4.Enabled = false;
                             Bell.Enabled = false;
+                        isPress = false;
                             remainPlayer--;
                             if (player.Username != playerTurn)
                                 AddText(1, $"Lượt của người chơi {playerTurn}\r\n");
@@ -303,6 +306,7 @@ namespace Olympia.Forms {
                         data = Payload[1].Split('-');
                         if (data[0] == "0") {
                             remainPlayer--;
+                        isPress = false;
                             AddText(0, $"Không chính xác! Người chơi {data[1]} bị loại!\r\n");
                             btnAnswer.Enabled = true;
                             foreach (Button b in remainButton) {
@@ -447,9 +451,9 @@ namespace Olympia.Forms {
                 Visible = false;
                 form.ShowDialog();
             if (isTerminated) {
-                Invoke(new MethodInvoker(delegate {
+                //Invoke(new MethodInvoker(delegate {
                     form.Visible = false;
-                }));
+                //}));
             }
                 if (form.IsQuestDone()) {
                     suspendEvent.Reset();
@@ -726,8 +730,9 @@ namespace Olympia.Forms {
 
         private void countdownFinalTimer_Tick(object sender, EventArgs e) {
             if (finalTimeLeft.TotalSeconds > 0) {
-                if (!isPress)
+                if (!isPress) {
                     finalTimeLeft = finalTimeLeft.Subtract(TimeSpan.FromSeconds(1));
+                }
             } else {
                 countdownFinalTimer.Stop();
                 AddText(0, "Đã hết 5 giây cuối cùng, không ai trả lời được chướng ngại vật\r\n");

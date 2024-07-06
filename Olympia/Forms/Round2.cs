@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
@@ -54,6 +55,7 @@ namespace Olympia.Forms {
         }
 
         private void Round2_Load(object sender, EventArgs e) {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
             receive = new Thread(() => ReceiveMessage(client));
             receive.IsBackground = true;
             receive.Start();
@@ -201,6 +203,7 @@ namespace Olympia.Forms {
                     show.client = client;
                     show.roomCode = roomCode;
                     show.round = 2;
+                    show.WindowState = FormWindowState.Normal;
                     show.ShowDialog();
                     Invoke(new MethodInvoker(delegate {
                         Visible = false;

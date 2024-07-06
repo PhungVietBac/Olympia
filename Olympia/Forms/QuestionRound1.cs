@@ -1,5 +1,6 @@
 ﻿using Olympia.Models;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Media;
 using System.Net.Sockets;
@@ -37,6 +38,7 @@ namespace Olympia.Forms {
         }
 
         private void QuestionRound1_Load(object sender, EventArgs e) {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
             analyzedData = data.Split('*');
             isReady = true;
             Clock.Invalidate();
