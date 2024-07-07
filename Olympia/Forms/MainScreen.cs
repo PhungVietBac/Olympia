@@ -46,8 +46,8 @@ namespace Olympia.Forms {
         }
 
         private void ReceiveMessage(TcpClient tcpClient) {
-            suspendEvent.WaitOne();
             while (true) {
+                suspendEvent.WaitOne();
                 if (tcpClient == null || !tcpClient.Connected)
                     continue;
                 else {

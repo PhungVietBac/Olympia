@@ -204,42 +204,17 @@ namespace Olympia.Forms {
         }
 
         private async void AnalyzingMessage(string mess, TcpClient tcpClient) {
-            MessageBox.Show(mess);
             string[] Payload = mess.Split(':');
             switch (Payload[0]) {
                 case "REP_INVITE":
                     if (Payload[1] == "0") {
-                        if (InvokeRequired) {
-                            Invoke(new MethodInvoker(delegate {
-                                MessageBox.Show("Người chơi này chưa online!");
-                            }));
-                        } else {
-                            MessageBox.Show("Người chơi này chưa online!");
-                        }
+                        MessageBox.Show("Người chơi này chưa online!");
                     } else if (Payload[1] == "1") {
-                        if (InvokeRequired) {
-                            Invoke(new MethodInvoker(delegate {
-                                MessageBox.Show("Người chơi này đã vào phòng khác!");
-                            }));
-                        } else {
-                            MessageBox.Show("Người chơi này đã vào phòng khác!");
-                        }    
+                        MessageBox.Show("Người chơi này đã vào phòng khác!");
                     } else if (Payload[1] == "2") {
-                        if (InvokeRequired) {
-                            Invoke(new MethodInvoker(delegate {
-                                MessageBox.Show("Người chơi đã từ chối tham gia phòng!");
-                            }));
-                        } else {
-                            MessageBox.Show("Người chơi đã từ chối tham gia phòng!");
-                        } 
+                        MessageBox.Show("Người chơi đã từ chối tham gia phòng!");
                     } else {
-                        if (InvokeRequired) {
-                            Invoke(new MethodInvoker(delegate {
-                                MessageBox.Show("Người chơi đã đồng ý vào phòng!");
-                            }));
-                        } else {
-                            MessageBox.Show("Người chơi đã đồng ý vào phòng!");
-                        }
+                        MessageBox.Show("Người chơi đã đồng ý vào phòng!");
                     }
                     break;
                 case "INFO_CON":
@@ -269,8 +244,9 @@ namespace Olympia.Forms {
                             if (p.Tag.ToString() == data[3]) {
                                 i++;
                                 if (data[2] == player.Username) {
-                                    if (!isAdmin)
+                                    if (!isAdmin) {
                                         p.Image = image;
+                                    }
                                 } else
                                     p.Image = LoadImage(avatarByte);
                             }
