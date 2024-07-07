@@ -37,7 +37,7 @@
             this.lblInfoRound.Size = new System.Drawing.Size(591, 98);
             this.lblInfoRound.TabIndex = 63;
             this.lblInfoRound.Tag = "";
-            this.lblInfoRound.Text = "Chướng ngại vật gồm có n ký tự";
+            this.lblInfoRound.Text = "Tên vòng thi";
             this.lblInfoRound.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // InfoRound

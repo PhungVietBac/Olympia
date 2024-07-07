@@ -59,18 +59,18 @@ namespace Olympia.Forms {
             }
         }
 
-        private async void InfoRound_Load(object sender, EventArgs e) {
+        private void InfoRound_Load(object sender, EventArgs e) {
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Normal;
             if (round == 1) {
                 lblInfoRound.Text = "Vượt chướng ngại vật";
-            } else {
-                lblInfoRound.Text = "Tăng tốc";
-            }
-            startTimer.Start();
-            await Task.Run(() => {
                 sound = new SoundPlayer(Properties.Resources.Intro);
                 sound.Play();
-            });
+            } else {
+                lblInfoRound.Text = "Tăng tốc";
+                sound = new SoundPlayer(Properties.Resources.TT_Start);
+                sound.Play();
+            }
+            startTimer.Start();
         }
 
         private void InfoRound_FormClosing(object sender, FormClosingEventArgs e) {

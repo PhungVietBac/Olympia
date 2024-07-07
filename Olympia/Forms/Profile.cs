@@ -28,7 +28,7 @@ namespace Olympia.Forms {
             tbWinCount.Text = player.WinCount.ToString();
             ptbAvatar.SizeMode = PictureBoxSizeMode.StretchImage;
             ptbAvatar.Image = image;
-            if (self != player.Username) {
+            if (self.ToUpper() != player.Username.ToUpper()) {
                 btnEdit.Visible = false;
                 btnDelete.Visible = false;
                 btnGGForm.Visible = false;

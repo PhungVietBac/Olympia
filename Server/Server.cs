@@ -23,6 +23,7 @@ namespace Server {
         private string idQuestion;
         private string idAnswer;
         private List<string> roomCode = new List<string>();
+        private Dictionary<string, (TcpClient, bool)> onlinePlayers = new Dictionary<string, (TcpClient, bool)>();
         private Dictionary<string, int> isTrue = new Dictionary<string, int>();
         private Dictionary<string, string> ans = new Dictionary<string, string>();
         private Dictionary<string, List<List<string>>> playerAnswers = new Dictionary<string, List<List<string>>>();
@@ -76,8 +77,37 @@ namespace Server {
         private async void AnalyzeMessage(string message, TcpClient client) {
             string[] Payload = message.Split(':');
             switch (Payload[0]) {
-                case "CONNECT":
+                case "ONLINE":
+                    if (!onlinePlayers.ContainsKey(Payload[1])) {
+                        onlinePlayers[Payload[1]] = (client, true);
+                    }
+                    break;
+                case "OFFLINE":
+                    onlinePlayers.Remove(Payload[1]);
+                    break;
+                case "INVITE":
                     string[] data = Payload[1].Split('-');
+                    if (!onlinePlayers.ContainsKey(data[1])) {
+                        SendData("REP_INVITE:0", client);
+                    } else {
+                        if (!onlinePlayers[data[1]].Item2) {
+                            SendData("REP_INVITE:1", client);
+                        } else {
+                            SendData($"INVITE:{data[0]}-{data[2]}", onlinePlayers[data[1]].Item1);
+                        }
+                    }
+                    break;
+                case "REP_INVITE":
+                    data = Payload[1].Split('-');
+                    if (data[0] == "0") {
+                        SendData("REP_INVITE:2", onlinePlayers[data[1]].Item1);
+                    } else {
+                        SendData("REP_INVITE:3", onlinePlayers[data[1]].Item1);
+                    }
+                    break;
+                case "CONNECT":
+                    data = Payload[1].Split('-');
+                    onlinePlayers[data[1]] = (client, false);
                     if (!numConnection.ContainsKey(data[0]))
                         numConnection[data[0]] = 0;
                     numConnection[data[0]]++;
@@ -102,6 +132,7 @@ namespace Server {
                     data = Payload[1].Split('-');
                     packets[data[0]].Clear();
                     rooms[data[0]].Remove(client);
+                    onlinePlayers[data[1]] = (client, true);
                     int temp = --numConnection[data[0]];
                     List<string> keys = users[data[0]].Keys.ToList();
                     bool af = false;
@@ -386,8 +417,8 @@ namespace Server {
                         if (!QuestionsR2.ContainsKey(Payload[1])) {
                             QuestionsR2[Payload[1]] = new List<List<string>>();
                             Answers[Payload[1]].Clear();
-                            await GetQuestionsRound2(Payload[1], "http://localhost:2804/api/Question/NormalRound2", 3);
-                            await GetQuestionsRound2(Payload[1], "http://localhost:2804/api/Question/MainQuestionsByRound?round=2", 1);
+                            await GetQuestionsRound2(Payload[1], "https://olympiawebservice.azurewebsites.net/api/Question/NormalRound2", 3);
+                            await GetQuestionsRound2(Payload[1], "https://olympiawebservice.azurewebsites.net/api/Question/MainQuestionsByRound?round=2", 1);
                             var q = QuestionsR2[Payload[1]];
                             SendData($"QUEST_R2:0^{q[0][0]}^{q[0][1]}^{q[0][2]}", client);
                             Broadcast($"QUEST_R2:0^{q[0][0]}^{q[0][1]}^{q[0][2]}", Payload[1], client);
@@ -410,25 +441,27 @@ namespace Server {
                     SendData($"WINNER:{pk[0]}-{pls[pk[0]][1]}-{pls[data[1]][1]}", client);
                     break;
                 case "END":
-                    DeleteRoom(Payload[1]);
-                    if (isTrue.ContainsKey(Payload[1]))
-                        isTrue.Remove(Payload[1]);
-                    if (ans.ContainsKey(Payload[1]))
-                        ans.Remove(Payload[1]);
-                    if (playerAnswers.ContainsKey(Payload[1]))
-                        playerAnswers.Remove(Payload[1]);
-                    if (answerDescrpt.ContainsKey(Payload[1]))
-                        answerDescrpt.Remove(Payload[1]);
-                    if (Answers.ContainsKey(Payload[1]))
-                        Answers.Remove(Payload[1]);
-                    if (QuestionsR1.ContainsKey(Payload[1]))
-                        QuestionsR1.Remove(Payload[1]);
-                    if (QuestionsR2.ContainsKey(Payload[1]))
-                        QuestionsR2.Remove(Payload[1]);
-                    if (roomCode.Contains(Payload[1]))
-                        roomCode.Remove(Payload[1]);
-                    if (sem.ContainsKey(Payload[1]))
-                        sem.Remove(Payload[1]);
+                    data = Payload[1].Split('-');
+                    onlinePlayers[data[1]] = (client, true);
+                    DeleteRoom(data[0]);
+                    if (isTrue.ContainsKey(data[0]))
+                        isTrue.Remove(data[0]);
+                    if (ans.ContainsKey(data[0]))
+                        ans.Remove(data[0]);
+                    if (playerAnswers.ContainsKey(data[0]))
+                        playerAnswers.Remove(data[0]);
+                    if (answerDescrpt.ContainsKey(data[0]))
+                        answerDescrpt.Remove(data[0]);
+                    if (Answers.ContainsKey(data[0]))
+                        Answers.Remove(data[0]);
+                    if (QuestionsR1.ContainsKey(data[0]))
+                        QuestionsR1.Remove(data[0]);
+                    if (QuestionsR2.ContainsKey(data[0]))
+                        QuestionsR2.Remove(data[0]);
+                    if (roomCode.Contains(data[0]))
+                        roomCode.Remove(data[0]);
+                    if (sem.ContainsKey(data[0]))
+                        sem.Remove(data[0]);
                     break;
             }
         }
@@ -457,7 +490,7 @@ namespace Server {
                 numConnection.Remove(roomCode);
             using (HttpClient httpClient = new HttpClient()) {
                 try {
-                    string url = "http://localhost:2804/api/Room?idRoom=" + roomCode;
+                    string url = "https://olympiawebservice.azurewebsites.net/api/Room?idRoom=" + roomCode;
                     await httpClient.DeleteAsync(url);
                 } catch (Exception ex) {
                     
@@ -468,7 +501,7 @@ namespace Server {
         private async Task GetImageQuestionRound1() {
             using (HttpClient httpClient = new HttpClient()) {
                 try {
-                    var response = await httpClient.GetAsync("http://localhost:2804/api/Question/MainQuestionsByRound?round=1");
+                    var response = await httpClient.GetAsync("https://olympiawebservice.azurewebsites.net/api/Question/MainQuestionsByRound?round=1");
                     if (response.IsSuccessStatusCode) {
                         var res = await response.Content.ReadAsStringAsync();
                         JArray questions = JArray.Parse(res);
@@ -500,7 +533,7 @@ namespace Server {
                             string idQ = quest["idQuestion"].ToString();
                             QuestionsR2[roomCode].Add(l);
                             try {
-                                response = await httpClient.GetAsync($"http://localhost:2804/api/Question/Answer/{idQ}");
+                                response = await httpClient.GetAsync($"https://olympiawebservice.azurewebsites.net/api/Question/Answer/{idQ}");
                                 if (response.IsSuccessStatusCode) {
                                     res = await response.Content.ReadAsStringAsync();
                                     JObject resAns = JObject.Parse(res);
@@ -517,7 +550,7 @@ namespace Server {
         private async Task GetMemberQuestionRound1(string roomCode) {
             using (HttpClient httpClient = new HttpClient()) {
                 try {
-                    var response = await httpClient.GetAsync($"http://localhost:2804/api/Question/MemberQuestions/{idQuestion}");
+                    var response = await httpClient.GetAsync($"https://olympiawebservice.azurewebsites.net/api/Question/MemberQuestions/{idQuestion}");
                     if (response.IsSuccessStatusCode) {
                         var res = await response.Content.ReadAsStringAsync();
                         JArray questions = JArray.Parse(res);
@@ -527,7 +560,7 @@ namespace Server {
                             string quest = question["quest"].ToString();
                             if (!QuestionsR1[roomCode].ContainsKey(quest)) {
                                 try {
-                                    response = await httpClient.GetAsync($"http://localhost:2804/api/Question/Answer/{idQuest}");
+                                    response = await httpClient.GetAsync($"https://olympiawebservice.azurewebsites.net/api/Question/Answer/{idQuest}");
                                     if (response.IsSuccessStatusCode) {
                                         res = await response.Content.ReadAsStringAsync();
                                         JObject resAns = JObject.Parse(res);
@@ -549,7 +582,7 @@ namespace Server {
         private async Task GetImageAnswerRound1(string roomCode) {
             using (HttpClient httpClient = new HttpClient()) {
                 try {
-                    var response = await httpClient.GetAsync($"http://localhost:2804/api/Answer/{idAnswer}");
+                    var response = await httpClient.GetAsync($"https://olympiawebservice.azurewebsites.net/api/Answer/{idAnswer}");
                     if (response.IsSuccessStatusCode) {
                         var res = await response.Content.ReadAsStringAsync();
                         JObject resAns = JObject.Parse(res);

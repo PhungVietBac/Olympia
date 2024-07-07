@@ -133,8 +133,8 @@ namespace Olympia.Forms {
                 endTimer.Stop();
                 foreach (Form form in Application.OpenForms) {
                     if (form.Name == "MainScreen") {
-                        ((MainScreen)form).username = player.Username;
                         form.Visible = true;
+                        ((MainScreen)form).suspendEvent.Set();
                         break;
                     }
                 }
@@ -146,7 +146,7 @@ namespace Olympia.Forms {
             if (receive.IsAlive)
                 receive.Abort();
             if (client.Connected) {
-                SendData($"END:{roomCode}", client);
+                SendData($"END:{roomCode}-{player.Username}", client);
                 client.Close();
             }
             sound.Stop();

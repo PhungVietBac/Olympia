@@ -32,7 +32,7 @@ namespace Olympia.Forms {
             } else {
                 using (HttpClient client = new HttpClient()) {
                     try {
-                        string url = "https://olympiawebservice.azurewebsites.net/api/Player/username?lookup=" + tbUsername.Text.Trim();
+                        string url = "https://olympiawebservice.azurewebsites.net/api/Player/username?lookup=" + tbUsername.Text;
                         var response = await client.GetAsync(url);
                         if (!response.IsSuccessStatusCode) {
                             lblAlertUsername.Text = "ⓘ Username không tồn tại";

@@ -371,6 +371,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Pictures\add.png" />
+    <Content Include="Pictures\Cross.png" />
+    <Content Include="Pictures\Tick.png" />
     <Content Include="Sound\Intro.wav" />
     <Content Include="Sound\TT_10s.wav" />
     <Content Include="Sound\TT_20s.wav" />
@@ -380,6 +383,7 @@
     <Content Include="Sound\Result.wav" />
     <Content Include="Sound\VCNV_15s.wav" />
     <Content Include="Sound\VCNV_Select.wav" />
+    <Content Include="Sound\TT_Start.wav" />
     <Content Include="Sound\VCNV_True.wav" />
     <Content Include="Sound\VCNC_Bell.wav" />
     <Content Include="Sound\VNCV_OpenAns.wav" />
