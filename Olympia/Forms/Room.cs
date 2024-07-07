@@ -102,7 +102,6 @@ namespace Olympia.Forms {
             }
             SendData("DISCONNECT:" + roomCode + "-" + player.Username, client);
             Thread.Sleep(1000);
-            client.Close();
             Close();
         }
 
